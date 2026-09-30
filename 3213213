@@ -1,0 +1,431 @@
+## 1 вариант.
+
+-- 1
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30),
+    email VARCHAR(100)
+);
+
+-- 2
+CREATE TABLE laptop_models (
+    model_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    image VARCHAR(255)
+);
+
+-- 3
+CREATE TABLE laptop_configurations (
+    configuration_id INT AUTO_INCREMENT PRIMARY KEY,
+    model_id INT NOT NULL,
+    ram VARCHAR(20) NOT NULL,
+    ssd VARCHAR(20) NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (model_id)
+        REFERENCES laptop_models(model_id)
+        ON DELETE CASCADE,
+
+    CHECK (stock_quantity >= 0)
+);
+
+-- 4
+CREATE TABLE order_statuses (
+    status_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- 5
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    status_id INT NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (client_id)
+        REFERENCES clients(client_id),
+
+    FOREIGN KEY (status_id)
+        REFERENCES order_statuses(status_id)
+);
+
+-- 6
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    configuration_id INT NOT NULL,
+    quantity INT NOT NULL,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (configuration_id)
+        REFERENCES laptop_configurations(configuration_id),
+
+    CHECK (quantity > 0)
+);
+
+
+## 2 вариант.
+-- 1
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30),
+    email VARCHAR(100)
+);
+
+-- 2
+CREATE TABLE collections (
+    collection_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    image VARCHAR(255)
+);
+
+-- 3
+CREATE TABLE sizes (
+    size_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- 4
+CREATE TABLE products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    collection_id INT NOT NULL,
+    size_id INT NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (collection_id)
+        REFERENCES collections(collection_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (size_id)
+        REFERENCES sizes(size_id),
+
+    UNIQUE (collection_id, size_id),
+    CHECK (stock_quantity >= 0)
+);
+
+-- 5
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL DEFAULT 'Новый',
+
+    FOREIGN KEY (client_id)
+        REFERENCES clients(client_id)
+);
+
+-- 6
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (product_id)
+        REFERENCES products(product_id),
+
+    CHECK (quantity > 0)
+);
+
+
+## 3 вариант.
+-- 1
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30),
+    email VARCHAR(100)
+);
+
+-- 2
+CREATE TABLE bike_models (
+    model_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    image VARCHAR(255)
+);
+
+-- 3
+CREATE TABLE frame_sizes (
+    frame_size_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(10) NOT NULL UNIQUE
+);
+
+-- 4
+CREATE TABLE bikes (
+    bike_id INT AUTO_INCREMENT PRIMARY KEY,
+    model_id INT NOT NULL,
+    frame_size_id INT NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (model_id)
+        REFERENCES bike_models(model_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (frame_size_id)
+        REFERENCES frame_sizes(frame_size_id),
+
+    UNIQUE (model_id, frame_size_id),
+    CHECK (stock_quantity >= 0)
+);
+
+-- 5
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL DEFAULT 'Новый',
+
+    FOREIGN KEY (client_id)
+        REFERENCES clients(client_id)
+);
+
+-- 6
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    bike_id INT NOT NULL,
+    quantity INT NOT NULL,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (bike_id)
+        REFERENCES bikes(bike_id),
+
+    CHECK (quantity > 0)
+);
+
+
+## 4 вариант.
+-- 1
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30),
+    email VARCHAR(100)
+);
+
+-- 2
+CREATE TABLE food_models (
+    model_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    image VARCHAR(255)
+);
+
+-- 3
+CREATE TABLE food_products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    model_id INT NOT NULL,
+    weight DECIMAL(6,2) NOT NULL,
+    flavor VARCHAR(100) NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (model_id)
+        REFERENCES food_models(model_id)
+        ON DELETE CASCADE,
+
+    UNIQUE (model_id, weight, flavor),
+    CHECK (weight > 0),
+    CHECK (stock_quantity >= 0)
+);
+
+-- 4
+CREATE TABLE order_statuses (
+    status_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- 5
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    status_id INT NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (client_id)
+        REFERENCES clients(client_id),
+
+    FOREIGN KEY (status_id)
+        REFERENCES order_statuses(status_id)
+);
+
+-- 6
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (product_id)
+        REFERENCES food_products(product_id),
+
+    CHECK (quantity > 0)
+);
+
+
+## 5 вариант.
+-- 1
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30),
+    email VARCHAR(100)
+);
+
+-- 2
+CREATE TABLE wallpaper_collections (
+    collection_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    image VARCHAR(255)
+);
+
+-- 3
+CREATE TABLE materials (
+    material_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT
+);
+
+-- 4
+CREATE TABLE wallpaper_products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    collection_id INT NOT NULL,
+    material_id INT NOT NULL,
+    width DECIMAL(5,2) NOT NULL,
+    length DECIMAL(5,2) NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (collection_id)
+        REFERENCES wallpaper_collections(collection_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (material_id)
+        REFERENCES materials(material_id),
+
+    UNIQUE (collection_id, material_id, width, length),
+
+    CHECK (width > 0),
+    CHECK (length > 0),
+    CHECK (stock_quantity >= 0)
+);
+
+-- 5
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL DEFAULT 'Новый',
+
+    FOREIGN KEY (client_id)
+        REFERENCES clients(client_id)
+);
+
+-- 6
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (product_id)
+        REFERENCES wallpaper_products(product_id),
+
+    CHECK (quantity > 0)
+);
+
+
+## 6 вариант.
+-- 1
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30),
+    email VARCHAR(100)
+);
+
+-- 2
+CREATE TABLE departments (
+    department_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT
+);
+
+-- 3
+CREATE TABLE managers (
+    manager_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
+    phone VARCHAR(30),
+    department_id INT NOT NULL,
+
+    FOREIGN KEY (department_id)
+        REFERENCES departments(department_id)
+);
+
+-- 4
+CREATE TABLE tour_products (
+    tour_product_id INT AUTO_INCREMENT PRIMARY KEY,
+    destination VARCHAR(150) NOT NULL,
+    meal_type ENUM('BB', 'HB', 'FB') NOT NULL,
+    room_category VARCHAR(100) NOT NULL,
+    image VARCHAR(255),
+    stock_quantity INT NOT NULL DEFAULT 0,
+
+    UNIQUE (destination, meal_type, room_category),
+
+    CHECK (stock_quantity >= 0)
+);
+
+-- 5
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT NOT NULL,
+    manager_id INT NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL DEFAULT 'Новый',
+
+    FOREIGN KEY (client_id)
+        REFERENCES clients(client_id),
+
+    FOREIGN KEY (manager_id)
+        REFERENCES managers(manager_id)
+);
+
+-- 6
+CREATE TABLE order_items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    tour_product_id INT NOT NULL,
+    quantity INT NOT NULL,
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(order_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (tour_product_id)
+        REFERENCES tour_products(tour_product_id),
+
+    CHECK (quantity > 0)
+);
