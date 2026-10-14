@@ -5,7 +5,7 @@ import psycopg2
 
 BD_CON = {
     "host": "localhost",
-    "database": "gomnishe",
+    "database": "YA_ZABbIL",
     "user": "postgres",
     "password": "4640",
     "port": "5432",
