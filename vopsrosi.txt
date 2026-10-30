@@ -1,0 +1,5 @@
+1.
+
+1.2 - A-3,4 Б-1, В-4, Г-4, Д-4
+1.4 - 1,2,4,5,6
+1.5 - А-int, Б-varchar, В-varchar, Г-date, Д-varchar, Е-varchar, Ж-int, З-int, И-numeric, К-int, Л-numeric, М-int
